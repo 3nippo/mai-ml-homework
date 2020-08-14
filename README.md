@@ -1,2 +1,2 @@
 # mai-ml-homework
-it's free real estate (for Samir only)
+It's free real estate (the following repository is intended for Samir only) 
