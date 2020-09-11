@@ -2,30 +2,38 @@ import numpy as np
 cimport cython
 from TypeDefinitions cimport Index, TargetData
 
-# TODO move to private some methods
+cdef class CharacteristicResult:
+    cdef double characteristic, \
+                left_node_characteristic, \
+                right_node_characteristic
+
 cdef class SplitFunctions:
     """
     Non-private functions have interface:
-    double some_charachteristic(
+
+    CharacteristicResult some_characteristic(
         TargetData[:,:] y,
-        double node_charachteristic,
+        double node_characteristic,
         Index[:] left_split_indexes,
         Index[:] right_split_indexes
     )
 
     args:
-        y - labels
+        :param y - labels
 
-        node_charachteristic - characteristic of a
-        node-candidate for splitting. It is not required for
-        some_charachteristic function if variable name is '_'
+        :param node_characteristic - characteristic of a
+        node-candidate for splitting. It is needed for
+        such methods as gain_ratio, information_gain etc
 
         left_split_indexes - subj
 
         right_split_indexes - subj
+
+    :return:
+        CharacteristicResult
     """
     @staticmethod
-    cdef unsigned long __count_value(
+    cdef size_t __count_value(
         TargetData[:,:] y,
         Index[:] indexes,
         TargetData value
@@ -38,13 +46,13 @@ cdef class SplitFunctions:
     )
 
     @staticmethod
-    cdef double gini_impurity(
+    cdef double __gini_impurity(
         TargetData[:, :] y,
         Index[:] observation_indexes
     )
 
     @staticmethod
-    cdef double gini_index(
+    cdef CharacteristicResult gini_index(
         TargetData[:,:] y,
         double _,
         Index[:] left_split_indexes,
@@ -52,13 +60,13 @@ cdef class SplitFunctions:
     )
 
     @staticmethod
-    cdef double entropy(
+    cdef double __entropy(
         TargetData[:,:] y,
         Index[:] observation_indexes
     )
 
     @staticmethod
-    cdef double information_gain(
+    cdef CharacteristicResult information_gain(
         TargetData[:,:] y,
         double entropy_before,
         Index[:] left_split_indexes,
@@ -66,7 +74,7 @@ cdef class SplitFunctions:
     )
 
     @staticmethod
-    cdef double gain_ratio(
+    cdef CharacteristicResult gain_ratio(
         TargetData[:,:] y,
         double entropy_before,
         Index[:] left_split_indexes,
@@ -86,7 +94,7 @@ cdef class SplitFunctions:
     )
 
     @staticmethod
-    cdef double mse_sum(
+    cdef CharacteristicResult mse_sum(
         TargetData[:,:] y,
         double _,
         Index[:] left_split_indexes,
@@ -100,7 +108,7 @@ cdef class SplitFunctions:
     )
 
     @staticmethod
-    cdef double mae_sum(
+    cdef CharacteristicResult mae_sum(
         TargetData[:,:] y,
         double _,
         Index[:] left_split_indexes,
